@@ -30,8 +30,40 @@ router.put("/api/workouts/:_id", (req, res) => {
     })
 });
 
-router.get("/exercise", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/exercise.html"));
+router.get("/api/workouts", (req, res) => {
+    workout.find({}) //do i need -1 length here or just in api.js?
+    .then((dbworkout)=>{
+        res.json(dbworkout);
+    })
+    .catch(err => {
+        res.json(err);
+    })
+  
 });
 
-module.exports = router;
+router.get("/api/workouts/range", (req, res) => {
+    workout.find({}) 
+    .then((dbworkout)=>{
+        res.json(dbworkout);
+    })
+    .catch(err => {
+        res.json(err);
+    })
+  
+});
+
+// is this the same as workout.js line 22?
+// db.scores.aggregate( [
+//     {
+//       $addFields: {
+//         totalWorkouts: { $sum: "$workouts" } ,
+//         totalQuiz: { $sum: "$quiz" }
+//       }
+//     },
+//     {
+//       $addFields: { totalScore:
+//         { $add: [ "$totalHomework", "$totalQuiz", "$extraCredit" ] } }
+//     }
+//  ] )
+
+// module.exports = router;
