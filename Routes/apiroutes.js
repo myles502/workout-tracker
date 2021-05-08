@@ -30,40 +30,46 @@ router.put("/api/workouts/:_id", (req, res) => {
     })
 });
 
-router.get("/api/workouts", (req, res) => {
-    workout.find({}) //do i need -1 length here or just in api.js?
-    .then((dbworkout)=>{
-        res.json(dbworkout);
-    })
-    .catch(err => {
-        res.json(err);
-    })
+router.get("/api/workouts", async (req, res) => {
+   
+    
+      try{
+        const dbworkout = await workout.aggregate([
+            {
+              $addFields: {
+                totalDuration: { $sum: "$exercises.duration" },
+              },
+            },
+          ]);
+
+        res.json(dbworkout); 
+      }
+      catch(err) {
+        res.json(err); 
+      } 
+
+    
   
 });
 
-router.get("/api/workouts/range", (req, res) => {
-    workout.find({}) 
-    .then((dbworkout)=>{
-        res.json(dbworkout);
-    })
-    .catch(err => {
-        res.json(err);
-    })
+router.get("/api/workouts/range",async (req, res) => {
+    try{
+        const dbworkout = await workout.aggregate([
+            {
+              $addFields: {
+                totalDuration: { $sum: "$exercises.duration" },
+              },
+            },
+          ]).limit(7);
+
+        res.json(dbworkout); 
+      }
+      catch(err) {
+        res.json(err); 
+      } 
   
 });
 
-// is this the same as workout.js line 22?
-// db.scores.aggregate( [
-//     {
-//       $addFields: {
-//         totalWorkouts: { $sum: "$workouts" } ,
-//         totalQuiz: { $sum: "$quiz" }
-//       }
-//     },
-//     {
-//       $addFields: { totalScore:
-//         { $add: [ "$totalHomework", "$totalQuiz", "$extraCredit" ] } }
-//     }
-//  ] )
+
 
 module.exports = router;
